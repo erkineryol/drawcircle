@@ -95,30 +95,38 @@ float deg2rad(int deg){
   return radval;
 }
 
-//int buffer[10][2] = {
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0},
-//  {0,0}
-//};
+int buffer[10][2] = {
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,0},    
+    {0,0} };
+    
+int buffersize,buffer_idx;
 
-int** buffer;
-
-int[][] fillBuffer(int xMove,int xSign,int yMove,int ySign){
-  int maxmove=max(abs(xMove),abs(yMove));
-  buffer=int[maxmove][2];
-  xstep=xMove
+int fillBuffer(int xMove,int xSign,int yMove,int ySign){
+  int buffersize=max(abs(xMove),abs(yMove));
+  xstep=ceil(xMove/buffersize);
+  ystep=ceil(yMove/buffersize);  
   for(int i=0;i<maxmove;i++){
-    buffer[i][1]=0;
-    buffer[i][2]=0;    
+    if(i%xstep){
+      buffer[i][1]=xSign;
+    }else{
+      buffer[i][1]=0;
+    }
+    if(i%ystep){
+      buffer[i][2]=ySign;      
+    }else{
+      buffer[i][2]=0;
+    }    
   }
-  return buffer;
+  return buffersize;
 }
 
 void loop () {
@@ -140,10 +148,12 @@ void loop () {
     ysign=ymove/(abs(ymove)+0.0001);
         
     //fill a movement buffer
-    buffer=fillBuffer(int xMove,int xSign,int yMove,int ySign);
+    buffersize=fillBuffer(abs(xmove),xsign,abs(ymove),ysign);
        
     oldx=newx;  
     oldy=newy;  
+    
+    buffer_idx=0;
   } else{
     
     
