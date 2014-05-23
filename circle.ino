@@ -25,6 +25,7 @@
 int counter;
 int xDIR, yDIR;
 int R=10, newx, newy, oldx, oldy,xmove,ymove,xsign,ysign;
+int curTime;
 
 void setup() {
   pinMode(LED_PIN  , OUTPUT);
@@ -44,6 +45,7 @@ void setup() {
   counter=0;
   xDIR=0;
   yDIR=0;
+  curTime=0;
 }
 
 unsigned long prevMillis;
@@ -94,51 +96,34 @@ float deg2rad(int deg){
 }
 
 void loop () {
-  
-  counter = counter+1;
-  
-  //calculate dx and dy
-  newx=R*sin(deg2rad(counter%360));
-  newy=R*cos(deg2rad(counter%360));
-  
-  xmove=ceil(oldx-newx);
-  ymove=ceil(oldy-newy);
 
-  xsign=xmove/(abs(xmove)+0.0001);
-  ysign=ymove/(abs(ymove)+0.0001);
+  //sample a new point and move to it
+  //if the movement buffer is empty
+  if (millis()-curtime == moveTime ) {
   
-  //move x axis
-  if(xsign==1){
-    for (int i = 1; i < xmove; i++) { 
-      goX();
-    }
-  }
-  if(xsign==-1){
-    for (int i = 1; i < -xmove; i++) { 
-      goXneg();
-    }
-  }
-  if(xsign==0){
-    //no move
-  }
-  
-  //move y axis
-  if(ysign==1){
-    for (int i = 1; i < ymove; i++) { 
-      goY();
-    }
-  }
-  if(ysign==-1){
-    for (int i = 1; i < -ymove; i++) { 
-      goYneg();
-    }
-  }
-  if(ysign==0){
-    //no move
-  }
-  
+    counter = counter+1;
     
-  oldx=newx;  
-  oldy=newy;
+    //calculate dx and dy
+    newx=R*sin(deg2rad(counter%360));
+    newy=R*cos(deg2rad(counter%360));
+    
+    xmove=ceil(oldx-newx);
+    ymove=ceil(oldy-newy);
+  
+    xsign=xmove/(abs(xmove)+0.0001);
+    ysign=ymove/(abs(ymove)+0.0001);
+        
+    //fill a movement buffer
+    
+      
+    oldx=newx;  
+    oldy=newy;  
+    
+    
+  }
+  
+  
+  
+  
 }
 
