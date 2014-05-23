@@ -25,7 +25,7 @@
 int counter;
 int xDIR, yDIR;
 int R=10, newx, newy, oldx, oldy,xmove,ymove,xsign,ysign;
-int curTime;
+int curtime,movetime;
 
 void setup() {
   pinMode(LED_PIN  , OUTPUT);
@@ -45,7 +45,7 @@ void setup() {
   counter=0;
   xDIR=0;
   yDIR=0;
-  curTime=0;
+  curtime=0;
 }
 
 unsigned long prevMillis;
@@ -95,11 +95,29 @@ float deg2rad(int deg){
   return radval;
 }
 
+int buffer[10][2] = {
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0},
+  {0,0}
+};
+
+
+void fillBuffer(int xMove,int yMove){
+  
+}
+
 void loop () {
 
   //sample a new point and move to it
   //if the movement buffer is empty
-  if (millis()-curtime == moveTime ) {
+  if (millis()-curtime == movetime ) {
   
     counter = counter+1;
     
