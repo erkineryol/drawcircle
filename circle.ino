@@ -95,22 +95,30 @@ float deg2rad(int deg){
   return radval;
 }
 
-int buffer[10][2] = {
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0},
-  {0,0}
-};
+//int buffer[10][2] = {
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0},
+//  {0,0}
+//};
 
+int** buffer;
 
-void fillBuffer(int xMove,int yMove){
-  
+int[][] fillBuffer(int xMove,int xSign,int yMove,int ySign){
+  int maxmove=max(abs(xMove),abs(yMove));
+  buffer=int[maxmove][2];
+  xstep=xMove
+  for(int i=0;i<maxmove;i++){
+    buffer[i][1]=0;
+    buffer[i][2]=0;    
+  }
+  return buffer;
 }
 
 void loop () {
@@ -132,13 +140,19 @@ void loop () {
     ysign=ymove/(abs(ymove)+0.0001);
         
     //fill a movement buffer
-    
-      
+    buffer=fillBuffer(int xMove,int xSign,int yMove,int ySign);
+       
     oldx=newx;  
     oldy=newy;  
+  } else{
+    
     
     
   }
+  
+  
+    
+}
   
   
   
