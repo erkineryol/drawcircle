@@ -1,0 +1,124 @@
+#include <math.h>
+
+#define X_STEP_PIN         54
+#define X_DIR_PIN          55
+#define X_ENABLE_PIN       38
+#define X_MIN_PIN           3
+#define X_MAX_PIN           2
+
+#define Y_STEP_PIN         60
+#define Y_DIR_PIN          61
+#define Y_ENABLE_PIN       56
+#define Y_MIN_PIN          14
+#define Y_MAX_PIN          15
+
+#define SDPOWER            -1
+
+#define SDSS               53
+#define LED_PIN            13
+
+#define FAN_PIN            9
+
+#define PS_ON_PIN          12
+#define KILL_PIN           -1
+
+int counter;
+int xDIR, yDIR;
+float R=300, newx, newy, oldx, oldy,xmove,ymove,xsign,ysign,radval,fi;
+int xstep,ystep;
+int curtime,movetime;
+
+void setup() {
+  pinMode(LED_PIN  , OUTPUT);
+  
+  pinMode(X_STEP_PIN  , OUTPUT);
+  pinMode(X_DIR_PIN    , OUTPUT);
+  pinMode(X_ENABLE_PIN    , OUTPUT);
+  
+  pinMode(Y_STEP_PIN  , OUTPUT);
+  pinMode(Y_DIR_PIN    , OUTPUT);
+  pinMode(Y_ENABLE_PIN    , OUTPUT);
+    
+  digitalWrite(X_ENABLE_PIN    , LOW);
+  digitalWrite(Y_ENABLE_PIN    , LOW);
+  Serial.begin(9600);
+    
+  counter=0;
+  xDIR=0;
+  yDIR=0;
+  curtime=0;
+}
+
+unsigned long prevMillis;
+
+void goX(float moveX,int dir){
+  String out="x:";
+  int moveval=dir*moveX;
+  String out2=out+moveval; 
+  Serial.println(out2);
+  
+  if(moveX==0) return;
+  if(dir==1){
+    digitalWrite(X_DIR_PIN    , HIGH);
+  }
+  if(dir==-1){
+    digitalWrite(X_DIR_PIN    , LOW);
+  }  
+  for(int i=0;i<moveX*10;i++){
+    digitalWrite(X_STEP_PIN    , HIGH);
+    delay(1);
+    digitalWrite(X_STEP_PIN    , LOW);
+  }
+
+}
+
+void goY(float moveY,int dir){
+  String out="y:";
+  int moveval=dir*moveY;
+  String out2=out+moveval; 
+  Serial.println(out2);
+  
+  if(moveY==0) return;
+  if(dir==1){
+    digitalWrite(Y_DIR_PIN    , HIGH);
+  }
+  if(dir==-1){
+    digitalWrite(Y_DIR_PIN    , LOW);
+  }  
+  for(int i=0;i<moveY*10;i++){
+    digitalWrite(Y_STEP_PIN    , HIGH);
+    delay(1);
+    digitalWrite(Y_STEP_PIN    , LOW);
+  }
+
+}
+
+float deg2rad(int deg){
+  float radval=deg*3.14159/180;
+  return radval;
+}
+
+void loop () {
+    counter = counter+1;
+    radval=deg2rad(counter%360);
+    fi=deg2rad(40*ceil(counter/360));
+    
+    //calculate dx and dy
+    newx=0.5*R*cos(radval)*cos(fi)-R*sin(radval)*sin(fi);
+    newy=R*sin(radval)*cos(fi)+0.5*R*cos(radval)*sin(fi);
+    
+    xmove=round(oldx-newx);
+    ymove=round(oldy-newy);
+  
+    if(xmove>0) xsign=1;
+    if(xmove<0) xsign=-1;
+    
+    if(ymove>0) ysign=1;
+    if(ymove<0) ysign=-1;
+        
+    goX(abs(xmove),xsign);
+    goY(abs(ymove),ysign);
+    
+    oldx=newx;  
+    oldy=newy;
+}
