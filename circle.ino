@@ -51,43 +51,29 @@ void setup() {
 
 unsigned long prevMillis;
 
-void goX(){
-  if(xDIR!=1){
+void goX(int moveX,int dir){
+  if(moveX==0) return;
+  if(dir==1){
     digitalWrite(X_DIR_PIN    , HIGH);
-    xDIR=1;
   }
-  digitalWrite(X_STEP_PIN    , HIGH);
-  delay(1);
-  digitalWrite(X_STEP_PIN    , LOW);
-}
-
-void goY(){
-  if(yDIR!=1){
-    digitalWrite(Y_DIR_PIN    , HIGH);
-    yDIR=1; 
-  }
-  digitalWrite(Y_STEP_PIN    , HIGH);
-  delay(1);
-  digitalWrite(Y_STEP_PIN    , LOW);
-}
-
-void goXneg(){
-  if(xDIR!=-1){
+  if(dir==-1){
     digitalWrite(X_DIR_PIN    , LOW);
-    xDIR=-1;
-  }
+  }  
   digitalWrite(X_STEP_PIN    , HIGH);
-  delay(1);
+  delay(moveX);
   digitalWrite(X_STEP_PIN    , LOW);
 }
 
-void goYneg(){
-  if(yDIR!=-1){
-    digitalWrite(Y_DIR_PIN    , LOW);
-    yDIR=-1;
+void goY(int moveY,int dir){
+  if(moveY==0) return;
+  if(dir==1){
+    digitalWrite(Y_DIR_PIN    , HIGH);
   }
+  if(dir==-1){
+    digitalWrite(Y_DIR_PIN    , LOW);
+  }  
   digitalWrite(Y_STEP_PIN    , HIGH);
-  delay(1);
+  delay(moveY);
   digitalWrite(Y_STEP_PIN    , LOW);
 }
 
@@ -96,45 +82,7 @@ float deg2rad(int deg){
   return radval;
 }
 
-int buffer[11][2] = {
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},
-    {0,0},    
-    {0,0} };
-    
-int buffersize,buffer_idx;
-
-int fillBuffer(int xMove,int xSign,int yMove,int ySign){
-  int buffersize=max(abs(xMove),abs(yMove));
-  xstep=ceil(xMove/buffersize);
-  ystep=ceil(yMove/buffersize);  
-  for(int i=0;i<buffersize;i++){
-    if(i%xstep){
-      buffer[i][1]=xSign;
-    }else{
-      buffer[i][1]=0;
-    }
-    if(i%ystep){
-      buffer[i][2]=ySign;      
-    }else{
-      buffer[i][2]=0;
-    }    
-  }
-  return buffersize;
-}
-
 void loop () {
-
-  //sample a new point and move to it
-  //if the movement buffer is empty
-  if (millis()-curtime == movetime ) {
   
     counter = counter+1;
     
@@ -148,17 +96,10 @@ void loop () {
     xsign=xmove/(abs(xmove)+0.0001);
     ysign=ymove/(abs(ymove)+0.0001);
         
-    //fill a movement buffer
-    buffersize=fillBuffer(abs(xmove),xsign,abs(ymove),ysign);
-       
+    goX(xmove,xsign);    
+    goY(ymove,xsign);
+    
     oldx=newx;  
-    oldy=newy;  
-    
-    buffer_idx=0;
-  } else{
-    
-    
-    
-  } 
+    oldy=newy;      
 }
 
