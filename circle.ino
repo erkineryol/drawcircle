@@ -25,6 +25,7 @@
 int counter;
 int xDIR, yDIR;
 int R=10, newx, newy, oldx, oldy,xmove,ymove,xsign,ysign;
+int xstep,ystep;
 int curtime,movetime;
 
 void setup() {
@@ -95,7 +96,7 @@ float deg2rad(int deg){
   return radval;
 }
 
-int buffer[10][2] = {
+int buffer[11][2] = {
     {0,0},
     {0,0},
     {0,0},
@@ -114,7 +115,7 @@ int fillBuffer(int xMove,int xSign,int yMove,int ySign){
   int buffersize=max(abs(xMove),abs(yMove));
   xstep=ceil(xMove/buffersize);
   ystep=ceil(yMove/buffersize);  
-  for(int i=0;i<maxmove;i++){
+  for(int i=0;i<buffersize;i++){
     if(i%xstep){
       buffer[i][1]=xSign;
     }else{
@@ -158,14 +159,6 @@ void loop () {
     
     
     
-  }
-  
-  
-    
-}
-  
-  
-  
-  
+  } 
 }
 
